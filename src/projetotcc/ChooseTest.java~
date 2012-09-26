@@ -1,0 +1,124 @@
+package projetotcc;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+public class ChooseTest extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7820752752710030254L;
+	private JPanel contentPane;
+	
+	//private JList<String> lstTests;
+	private Connection sqlConn;
+	private JTable testsTable;
+
+	/**
+	 * Create the frame.
+	 */
+	public ChooseTest() {
+		setTitle("Simulador de Questões de Vestibulares");
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 354, 235);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JButton btnGo = new JButton("Ir");
+		btnGo.setMnemonic('G');
+		btnGo.setBounds(249, 176, 89, 23);
+		contentPane.add(btnGo);
+		
+		JButton btnBack = new JButton("Voltar");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFrame t = Main.visual; 
+        		t.setVisible(false);
+        		Main.visual = new MainVisual();
+        		t.dispose();
+        		Main.visual.setVisible(true);
+			}
+		});
+		btnBack.setMnemonic('E');
+		btnBack.setBounds(10, 176, 89, 23);
+		contentPane.add(btnBack);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 11, 328, 154);
+		contentPane.add(scrollPane);
+		
+		testsTable = new JTable();
+		scrollPane.setViewportView(testsTable);
+				
+		/*lstTests = new JList<String>();
+		lstTests.setEnabled(false);
+		lstTests.setCellRenderer(new ListCellRenderer(){
+			@Override
+			public Component getListCellRendererComponent(JList list,
+					Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				//...
+				return null;
+			}
+		});
+		lstTests.setListData(new String[]{"Baixando lista...", "Espere, isto pode demorar um pouco."});
+		scrollPane.setViewportView(lstTests);
+		lstTests.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);*/
+		
+		new Thread(){
+			public void run(){
+				prepareList();
+				System.out.println("...");
+			}
+		}.start();
+	}
+	
+	
+	protected void prepareList(){
+		//Main.sqlTestsDBWebAddr
+		try {
+			//Main.downloadFile(Main.sqlTestsDBWebAddr, Main.getDBFilePath(Main.sqlTestsDB));
+		} catch (Exception e) {
+			Main.showMessage("Não foi possível se conectar a internet ou nosso website não está disponível.", Main.titleError);
+			e.printStackTrace();
+		}
+
+		sqlConn = null;
+		sqlConn = Main.createSQLConn(Main.sqlTestsDB);
+		if(sqlConn != null)
+			try {
+				Statement stat = sqlConn.createStatement();
+				String query = "SELECT `name` from `" + Main.sqlTestsTable + "`;";
+				ResultSet result =  stat.executeQuery(query);
+				if (result.getMetaData().getColumnCount() <= 0){
+					//lstTests.setListData(new String[]{"Lista de provas indisponível, por favor,","conecte o computador a internet ao menos uma vez."});
+					return;
+				}
+				Vector<String> list = new Vector<String>();
+				while(result.next())
+					list.add(result.getString(1));
+				stat.close();
+				//lstTests.setListData(list);
+			} catch (SQLException e) {
+				//lstTests.setListData(new String[]{"Lista de provas indisponível, por favor,","conecte o computador a internet ao menos uma vez."});
+				e.printStackTrace();
+			}
+	}
+}

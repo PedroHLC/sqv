@@ -1,0 +1,70 @@
+package projetotcc;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
+import javax.swing.JTextPane;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class MainVisual extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6781605021975440639L;
+	private JPanel contentPane;
+
+	/**
+	 * Create the frame.
+	 */
+	public MainVisual() {
+		setTitle("Simulador de Questões de Vestibulares");
+		setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 423, 250);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+        
+        JButton btnGoTraining = new JButton("Iniciar Treinamento");
+        btnGoTraining.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		JFrame t = Main.visual; 
+        		t.setVisible(false);
+        		Main.visual = new ChooseTest();
+        		t.dispose();
+        		Main.visual.setVisible(true);
+        	}
+        });
+        btnGoTraining.setMnemonic('T');
+        btnGoTraining.setBounds(10, 11, 181, 60);
+        contentPane.add(btnGoTraining);
+        
+        JButton btnSeeStatus = new JButton("Ver Estatisticas");
+        btnSeeStatus.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        	}
+        });
+        btnSeeStatus.setMnemonic('S');
+        btnSeeStatus.setBounds(10, 82, 181, 60);
+        contentPane.add(btnSeeStatus);
+        
+        JButton btnExit = new JButton("Sair");
+        btnExit.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		System.exit(0);
+        	}
+        });
+        btnExit.setMnemonic('E');
+        btnExit.setBounds(10, 153, 181, 60);
+        contentPane.add(btnExit);
+        
+        JTextPane tpDescription = new JTextPane();
+        tpDescription.setText("Este software gratuito foi projetado para ajudar vestibulandos a treinar suas habilidades, bla bl\u00E1 bl\u00E1 bla...\r\n\r\nISTO \u00C9 UM RASCUNHO!!!");
+        tpDescription.setBounds(201, 11, 208, 202);
+        contentPane.add(tpDescription);
+	}
+}

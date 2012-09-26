@@ -1,0 +1,97 @@
+-- PERÍODO DE CRIAÇÃO
+
+Dia 1 - 16/04/2012
+Hoje, copie todas as provas baixada pelo felipe. Também baixei o sqlitejdbc, driver para acesso a um banco sqlite em java.
+Tentando utilizar o sqlitejdbc criei a classe MainConfig que vai servir para controlar as configurações do usuário que ficam salvas em um banco "maindb.dat".
+
+Dia 2 - 25/04/2012
+Criei um comando para baixar uma database com uma lista de todas as provas disponíveis.
+
+Dia 3 - 30/04/2012
+Os downloads agora ficão com a terminação .part até terminarem de serem baixados.
+Mais um pouco da parte visual foi criada.
+Arquivos agora ficam em uma pasta chamada sqv_data
+
+Dia 4 - 04/05/2012
+Depois de 3 tentativas a lista de provas está finalmente funcionando
+
+Dia 5 - 09/05/2012
+Downloader criado para baixar testes com porcentagem
+
+Dia 6 - 13/05/2012
+Downloader agora consegue obter o tamanho do arquivo acim fazendo a porcentagem funcionar.
+Agora utilizamos HttpURLConnection para downloads.
+Dialogo de Download criado.
+Sistema para download de provas finalizado.
+
+Dia 7 - 23/05/2012
+Janela para as questões criado.
+
+Dia 8 - 26/05/2012
+Criado conversor de arquivo esboço de prova pra sql.
+Criado classe Test para ler/instanciar uma prova
+Criado classe Question para ler/instanciar uma questão
+Apartir da janela de questões foi criado a classe QuestionsRunner q é capaz de carregar uma prova e suas questões e aplica-lá.
+
+Dia 9 - 29/05/2012
+classe Test passou a se chamar HeavyTest por usar muita RAM
+criado classe LighterTest q usa menos RAM
+criado interface Test pra multicompatibilidade entre o LighterTest e o HeavyTest
+criado sistema para um servidor reserva caso o primeiro pare
+criado sistema de versão minima para não gerar incompatibilidade
+criado esboço da tela de gerenciamento de dados que serve para exportar/importar/limpar provas baixadas e dados pessoais relacionados ao programa.
+Criado função getQuestionNum para o LigherTest usando o método COUNT que descobri no livro "SQL" de Luís Damas.
+Criado a função Main.getRandomQuestsId q usa o sistema de aleatórizar Collections do Java para nos dar questões aleatórias.
+
+Dia 10 - 30/05/2012
+Corrigi o bug de largura.
+Adicionado Unescape(Substitução de \\n, \\t, \\34 por respectivamente \n, \t, ")
+Adicionado botão para Verificar Resposta e sua função
+Adicionado icone
+
+Dia 11 - 02/06/2012
+O programa utiliza o tema do SO em que foi rodado.
+Tela inicial com novo design.
+Questão do test sempre na fonte "Arial" tamanho 12 com negrito.
+Criado botão "Terminar".
+Criado classe da tela de estatistica.
+
+Dia 12 - 05/06/2012
+Adicionado ENEM
+Corrigido bug na seleção de prova
+Adicionado classe ChartPanel de autor desconhecido ao projeto.
+Criado visual da tela de estatistica.
+
+Dia 13 - 06/06/2012
+Adicionado classe QuestionID que serve para identificar a questão quando várias provas foram embaralhadas.
+Recriado todo sistema de embaralhação para aceitar mais de uma prova.
+Criado sistema para gravar estado de questões, assim permetindo as estatisticas funcionar.
+Adicionado funções simples de botões de navegação
+
+Dia 14 - 11/06/2012
+Respostas marcadas reaparecem quando você volta a uma questão respondida.
+Criado banco de histórico dos resultados.
+
+Dia 15 - 12/06/2012
+Tela de estatisticas insere dados dos históricos.
+Tela de estatisticas lê dados dos históricos.
+
+Dia 16 - 13/06/2012
+Tela de estatisticas exibe dados do histórico.
+Função de limpar histórico adicionado a tela de estatisticas.
+Corrigido bug que fazia baixar apenas uma prova de todas as selecionadas.
+Corrigido bug que causava diferença de tom em algumas opções.
+
+Dia 17 - 17/06/2012
+Todo o projeto foi convertido para o android.
+
+Dia 18 - 18/06/2012
+Resolvido bug que exibia uma questão inexistente.
+Resolvido bug que fazia com que o botão de "Avançar" não se desativase ao chegar na ultima questão disponível.
+Adicionado legenda ao gráfico de estatísticas.
+Adicionada tela opcional de visão do histórico em gráficos.
+
+-- LANÇAMENTO
+
+1.0.0 - 26/09/2012
+Adicionado a licença LGPLv3

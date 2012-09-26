@@ -1,0 +1,143 @@
+package projetotcc;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+public class Main {
+
+	protected static JFrame visual;
+	protected static String sqlConnector = "org.sqlite.JDBC";
+	protected static String sqlPrefix = "jdbc:sqlite:";
+	protected static String sqlSufix = ".dat";
+	protected static String sqlMainDB = "maindb";
+	protected static String sqlConfigTable = "config";
+	protected static String sqlTestsDBWebAddr = "http://www.pedrohlc.com/sqv/testslistdb.dat";
+	protected static String sqlTestsDB = "testslistdb";
+	protected static String sqlTestsTable = "list";
+	protected static String dwlSuffix = ".part";
+	protected static String titleError = "Um erro ocorreu no SQV";
+	protected static String dataFolder = "./sqv_data/";
+	protected static Connection mainConn = null;
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		createDataFolder();
+		createMainConn();		
+		System.out.println("Testing config DB: " + MainConfig.getConfig("test"));
+		visual = new MainVisual();
+		visual.setVisible(true);
+	}
+
+	
+	public static void showMessage(String content, String title){
+		System.out.println(title + ": " + content);
+		JOptionPane.showMessageDialog(Main.visual, content);
+	}
+	
+	public static String getDBSQLPath(String db){	return sqlPrefix + dataFolder + db + sqlSufix; }
+	public static String getDBFilePath(String db){	return dataFolder + db + sqlSufix; }
+	
+	public static void downloadFile(String location, String destination) throws MalformedURLException, IOException{
+		URL url = new URL(location);
+		ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+		String tmpDestination = destination + Main.dwlSuffix;
+	    FileOutputStream fos = new FileOutputStream(tmpDestination);
+	    fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+	    fos.close();
+	    rbc.close();
+	    moveFileForced(tmpDestination, destination);
+	}
+	
+	protected static Connection createSQLConn(String db){
+		try {
+			Class.forName("org.sqlite.JDBC");
+			return DriverManager.getConnection(getDBSQLPath(db));
+		} catch (SQLException e) {
+			showMessage("Database \"" + db + "\" corrompida.", Main.titleError);
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			showMessage("Um item do aplicativo não pode ser encontrado.\n" +
+					"Reinstale o aplicativo e tente novamente.", Main.titleError);
+			e.printStackTrace();
+			
+		}
+		return null;
+	}
+	
+	private static void createMainConn() {
+		mainConn = createSQLConn(sqlMainDB);
+		try {
+			Statement stat = mainConn.createStatement();
+			stat.executeUpdate("" +
+					"CREATE TABLE IF NOT EXISTS config(label char(32) NOT NULL, value char(1024) NOT NULL, PRIMARY KEY(label));");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return;
+		}
+		MainConfig.createBase();
+	}
+	
+	private static void createDataFolder() {
+		File dataFolderFile = new File(dataFolder);
+		if(!dataFolderFile.exists())
+			dataFolderFile.mkdir();
+	}
+	
+	private static boolean copyFile(String sourcePath, String newPath, boolean sourceDelete){
+		File fromF = new File(sourcePath);
+		File toF = new File(newPath);
+		FileInputStream from = null;
+	    FileOutputStream to = null;
+	    try {
+	    	from = new FileInputStream(fromF);
+	    	to = new FileOutputStream(toF);
+	    	byte[] buffer = new byte[4096];
+	    	int bytesRead;
+	    	while ((bytesRead = from.read(buffer)) != -1)
+		    	to.write(buffer, 0, bytesRead); // write
+	    } catch (IOException e) {
+			return false;
+		} finally {
+	    	if (from != null){
+	    		try {
+			    	from.close();
+			    } catch (IOException e) {
+			    	return false;
+			    } finally{
+			    	if(sourceDelete)
+			    		fromF.delete();
+			    }
+	    	}
+	    	if (to != null)
+	    		try {
+	    			to.close();
+	    		} catch (IOException e) {
+	    			return false;
+	    		}
+	    }
+	    return true;
+	}
+	
+	public static boolean copyFile(String sourcePath, String newPath){
+		return copyFile(sourcePath, newPath, false);
+	}
+	
+	public static boolean moveFileForced(String sourcePath, String newPath){
+		return copyFile(sourcePath, newPath, true);
+	}
+}
